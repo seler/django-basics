@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.conf import settings
+from basics import settings
 from django.contrib.flatpages.models import FlatPage
 from django.contrib.flatpages.admin import FlatPageAdmin, FlatpageForm
 from django.contrib.flatpages.views import DEFAULT_TEMPLATE
@@ -15,10 +15,13 @@ class NewFlatPageForm(FlatpageForm):
     sites = forms.ModelMultipleChoiceField(required=True,queryset=Site.objects.all(), widget=forms.widgets.CheckboxSelectMultiple,initial=[Site.objects.get_current()])
     try:
         from tinymce.widgets import TinyMCE
-        content = forms.CharField(widget=TinyMCE, required=False)
+        content = forms.CharField(widget=TinyMCE(attrs=settings.get('FLATPAGES_TINYMCE_WIDGET_ATTRS'), mce_attrs=settings.get('FLATPAGES_TINYMCE_CONFIG')), required=False)
     except ImportError, NameError:
         pass
-    template_name = forms.ChoiceField(required=False, label=_('Template'), choices=getattr(settings, 'FLATPAGES_TEMPLATE_NAME_CHOICES', FLATPAGES_TEMPLATE_NAME_CHOICES_DEFAULT))
+    template_name = forms.ChoiceField(required=False, label=_('Template'), choices=settings.get('FLATPAGES_TEMPLATE_NAME_CHOICES', FLATPAGES_TEMPLATE_NAME_CHOICES_DEFAULT))
+    
+    class Meta:
+        model = FlatPage
 
 class NewFlatPageAdmin(FlatPageAdmin):
     form = NewFlatPageForm

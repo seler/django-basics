@@ -1,0 +1,27 @@
+{% load flatpages i18n utils %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ flatpage.title }} - {{ site.name }}</title>
+    </head>
+    <body class="flatpage">
+        <h1>{{ site.name }}</h1>
+        <nav>
+            {% get_flatpages for user as flatpages %}
+            <ul>
+                {% for flatpage in flatpages %}
+                <li><a href="{{ flatpage.url }}">{{ flatpage.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </nav>
+        <ul>
+            {% get_flatpages for user as flatpages %}
+            {% for flatpage in flatpages %}
+            <li>
+                <h3><a href="{{ flatpage.url }}">{{ flatpage.title }}</a></h3>
+                <p>{{ flatpage.content|truncatewords:"50"|striptags }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>

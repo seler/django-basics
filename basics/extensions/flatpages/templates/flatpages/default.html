@@ -1,0 +1,29 @@
+{% load flatpages i18n utils %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ flatpage.title }} - {{ site.name }}</title>
+    </head>
+    <body class="flatpage">
+        <h1>{{ site.name }}</h1>
+        {% get_flatpages flatpage.url for user as subflatpages %}
+        {% ifnotequal subflatpages.count 1 %}
+        <h3>{% blocktrans %}SubFlatPages{% endblocktrans %}</h3>
+        <ul>
+            {% for subflatpage in subflatpages %}
+            {% ifnotequal flatpage.id subflatpage.id %}<li><a href="{{ subflatpage.url }}">{{ subflatpage.title }}</a></li>{% endifnotequal %}
+            {% endfor %}
+        </ul>
+        {% endifnotequal %}
+        <section class="content">{{ flatpage.content }}</section>
+        {% if flatpage.enable_comments %}
+        <section class="comments">
+            {% load comments %}
+            {% get_comment_count for flatpage as comment_count %}
+            <h3>{% blocktrans %}Comments ({{ comment_count }}){% endblocktrans %}</h3>
+            {% render_comment_list for flatpage %}
+            {% render_comment_form for flatpage %}
+        </section>
+        {% endif %}
+    </body>
+</html>
