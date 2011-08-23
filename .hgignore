@@ -6,7 +6,7 @@ syntax: glob
 syntax: regexp
 
 # baza danych
-^\.example_project/database.db$
+^example_project/database.db$
 
 # wszystkie foldery svn
 \.svn/
