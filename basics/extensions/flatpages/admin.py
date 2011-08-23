@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.db import models
+#from django.db import models
 from basics import settings
 from django.contrib.flatpages.models import FlatPage
 from django.contrib.flatpages.admin import FlatPageAdmin, FlatpageForm

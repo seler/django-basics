@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load url from future %}
+{% load utils %}
+
+{% with user.profile as profile %}
+    {% block title %}{% endblock %}
+    {% block content %}
+        {#% get_fields user.profile %#}
+        {% get_methods user %}
+        <h3>You can:</h3>
+        {% for perm in user.get_all_permissions %}
+        <ul>
+            <li>{{ perm }}</li>
+        </ul>
+        {% endfor %}
+    {% endblock %}
+{% endwith %}

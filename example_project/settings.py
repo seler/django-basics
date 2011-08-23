@@ -375,7 +375,7 @@ X_FRAME_OPTIONS = 'SAMEORIGIN'
 # List of middleware classes to use.  Order is important; in the request phase,
 # this middleware classes will be applied in the order given, and in the
 # response phase the middleware will be applied in reverse order.
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -385,7 +385,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.gzip.GZipMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
-)
+]
 
 ############
 # SESSIONS #
@@ -480,30 +480,30 @@ LOGGING_CONFIG = 'django.utils.log.dictConfig'
 # The default logging configuration. This sends an email to
 # the site admins on every HTTP 500 error. All other log
 # records are sent to the bit bucket.
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.CallbackFilter',
-            'callback': lambda r: not DEBUG
-        }
-    },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-    }
-}
+#LOGGING = {
+#    'version': 1,
+#    'disable_existing_loggers': False,
+#    'filters': {
+#        'require_debug_false': {
+#            '()': 'django.utils.log.CallbackFilter',
+#            'callback': lambda r: not DEBUG
+#        }
+#    },
+#    'handlers': {
+#        'mail_admins': {
+#            'level': 'ERROR',
+#            'filters': ['require_debug_false'],
+#            'class': 'django.utils.log.AdminEmailHandler'
+#        }
+#    },
+#    'loggers': {
+#        'django.request': {
+#            'handlers': ['mail_admins'],
+#            'level': 'ERROR',
+#            'propagate': True,
+#        },
+#    }
+#}
 
 # Default exception reporter filter class used in case none has been
 # specifically assigned to the HttpRequest instance.
@@ -566,7 +566,7 @@ SITE_ID = 1
 ROOT_URLCONF = 'example_project.urls'
 
 # List of strings representing installed apps.
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -581,9 +581,9 @@ INSTALLED_APPS = (
     'django.contrib.redirects',
 
     'tinymce',
-)
+]
 
-#AUTH_PROFILE_MODULE = 'accounts.UserProfile'
+AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 
 #############
 # BASICS    #
@@ -599,6 +599,7 @@ BASICS_INSTALLED_APPS = (
     'basics.categories',
     'basics.pages',
     'basics.files',
+    'basics.accounts',
 #    'basics.syndication',
 #    'basics.sitemaps',
 #    'basics.accounts',
@@ -608,7 +609,7 @@ BASICS_INSTALLED_APPS = (
 
 for x in BASICS_INSTALLED_APPS:
     if x not in INSTALLED_APPS:
-        INSTALLED_APPS = INSTALLED_APPS + (x,)
+        INSTALLED_APPS.append(x)
 
 BASICS_FLATPAGES_TEMPLATE_NAME_CHOICES = (
     ('flatpages/default.html', gettext_noop('Default template')),
@@ -623,6 +624,19 @@ BASICS_SYNDICATION_MODELS = (
 
 TEMPLATE_CONTEXT_PROCESSORS = TEMPLATE_CONTEXT_PROCESSORS + ('basics.core.context_processors.utils',)
 
-MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + (
+MIDDLEWARE_CLASSES.append(
     'basics.categories.middleware.CategoryFallbackMiddleware',
 )
+
+if DEBUG:
+    try:
+        import debug_toolbar
+    except ImportError:
+        pass
+    else:
+        # Insert DDT after the common middleware
+        common_index = MIDDLEWARE_CLASSES.index('django.middleware.common.CommonMiddleware')
+        MIDDLEWARE_CLASSES.insert(common_index+1, 'debug_toolbar.middleware.DebugToolbarMiddleware')
+        if '127.0.0.1' not in INTERNAL_IPS: 
+            INTERNAL_IPS = INTERNAL_IPS + ('127.0.0.1',)
+        INSTALLED_APPS.append('debug_toolbar')

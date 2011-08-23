@@ -1,0 +1,13 @@
+{% load flatpages i18n utils %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block title %} - {% endblock %}{{ site.name }}</title>
+        {% block extrahead %}{% endblock %}
+    </head>
+    <body class="flatpage">
+        <h1>{{ site.name }}</h1>
+        {% block content %}{% endblock %}
+        <p>&copy; 2005-{% now "Y" %} <a href="https://www.djangoproject.com/foundation/">Django Software Foundation</a> unless otherwise noted. Django is a registered trademark of the Django Software Foundation.</p>
+    </body>
+</html>

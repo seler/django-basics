@@ -49,7 +49,7 @@ class Page(BaseModel):
 
 #    @models.permalink
     def get_absolute_url(self):
-        return reverse('page_detail', kwargs={'path': self.get_url()})
+        return reverse('page_detail', kwargs={'path': self.get_url(), 'pk': self.pk})
 #        return ('pages.views.detail', [self.get_url()])
     
     def is_published(self):

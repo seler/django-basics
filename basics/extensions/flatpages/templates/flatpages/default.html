@@ -1,11 +1,7 @@
+{% extends 'base.html' %}
 {% load flatpages i18n utils %}
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>{{ flatpage.title }} - {{ site.name }}</title>
-    </head>
-    <body class="flatpage">
-        <h1>{{ site.name }}</h1>
+{% block title %}{{ flatpage.title }} - {% endblock %}
+{% block content %}
         {% get_flatpages flatpage.url for user as subflatpages %}
         {% ifnotequal subflatpages.count 1 %}
         <h3>{% blocktrans %}SubFlatPages{% endblocktrans %}</h3>
@@ -25,5 +21,4 @@
             {% render_comment_form for flatpage %}
         </section>
         {% endif %}
-    </body>
-</html>
+{% endblock content %}

@@ -1,5 +1,4 @@
 from django import template
-from django.conf import settings
 
 register = template.Library()
 
@@ -25,26 +24,26 @@ class CallNode(template.Node):
         
     def render(self, context):
         object = self.object.resolve(context)
+        if isinstance(object, str):
+            raise template.TemplateSyntaxError('Given object is string ("%s") of length %d' 
+                                               % (object, len(object)))
         
+        args = []
+        kwargs = {}
         if self.args:
-            args = []
             for arg in self.args:
                 args.append(arg.resolve(context))
         if self.kwargs:
-            kwargs = {}
             for key in self.kwargs:
                 kwargs[key] = self.kwargs[key].resolve(context)
             
         method = getattr(object, self.method, None)
         
         if method:
-            if hasattr(method, '__call__'): 
-                if self.args:
-                    result = method(*args, **kwargs)
-                else:
-                    result = method()
+            if hasattr(method, '__call__'):
+                result = method(*args, **kwargs)
             else:
-                result = method
+                callable = False
             if self.context_name:
                 context[self.context_name] = result
                 return ''
@@ -54,8 +53,13 @@ class CallNode(template.Node):
                 else:
                     return ''
         else:
-            raise template.TemplateSyntaxError('Instance if %s doesn\'t have method "%s"' 
-                                               % (object.__class__, self.method))
+            
+            try:
+                error_msg = 'Model %s don\'t have method "%s"' % (object._meta.object_name, self.method)
+            except AttributeError:
+                error_msg = 'Model %s don\'t have method "%s"' % (object, self.method)
+            raise template.TemplateSyntaxError(error_msg)
+                
 
 
 @register.tag
@@ -84,9 +88,9 @@ def call(parser, token):
     
     temp = bits[1].split('.')
     method = temp[-1]
-    object = '.'.join(temp[:-1]) 
+    object = '.'.join(temp[:-1])
     
-   # Must have at least 2 bits in the tag
+    # Must have at least 2 bits in the tag
     if len(bits) > 2:
         try:
             as_pos = bits.index('as')
@@ -126,3 +130,4 @@ def call(parser, token):
         return CallNode(object, method)
     else:
         raise template.TemplateSyntaxError(syntax_message)
+    
