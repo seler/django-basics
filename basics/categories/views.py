@@ -11,7 +11,7 @@ class CategoryDetailView(DetailView):
     def get_object(self):
         objects = Category.objects.published()
         try:
-            return (object for object in objects if object.path.lstrip('/').rstrip('/') == self.kwargs['path']).next()
+            return (object for object in objects if object.path.strip('/') == self.kwargs['path']).next()
         except StopIteration:
             raise Http404
         
@@ -19,7 +19,7 @@ class CategoryDetailView(DetailView):
 def category(request, path):
     objects = Category.objects.published()
     try:
-        category =  (object for object in objects if object.get_absolute_url().lstrip('/').rstrip('/') == path.lstrip('/').rstrip('/')).next()
+        category =  (object for object in objects if object.get_absolute_url().strip('/') == path.strip('/')).next()
     except StopIteration:
         raise Http404
 
