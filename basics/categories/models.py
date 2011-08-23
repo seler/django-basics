@@ -2,7 +2,7 @@ from django.db import models
 from basics.core.models import BaseModel
 from django.utils.translation import ugettext_lazy as _
 from basics.helpers import first_of
-from django.core.urlresolvers import reverse
+
 
 class Category(BaseModel):
     parent = models.ForeignKey('self', verbose_name=_('parent'), null=True, blank=True)
@@ -28,10 +28,9 @@ class Category(BaseModel):
         return url
     path = property(get_url)
 
-#    @models.permalink
+    @models.permalink
     def get_absolute_url(self):
-        return reverse('category_detail', kwargs={'path': self.get_url()})
-#        return ('pages.views.detail', [self.get_url()])
+        return ('category_detail', {'path': self.get_url()})
 
     def __unicode__(self):
         return first_of(self.name, self.slug, self.url)
