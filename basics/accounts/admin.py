@@ -6,6 +6,7 @@ from basics.accounts.models import UserProfile
 
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
+    readonly_fields = ['creation_date', 'last_mod_date']
 
 
 class NewUserAdmin(UserAdmin):

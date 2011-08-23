@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from basics.accounts.views import UserProfile, UserProfileDetail
+from basics.accounts.views import UserProfileDetail, SelfUserProfileDetail
 #from registration.forms import RegistrationFormUniqueEmail
 
 urlpatterns = patterns('',
@@ -14,23 +14,7 @@ urlpatterns = patterns('',
     url(r'^password/reset/confirm/$', 'django.contrib.auth.views.password_reset_confirm', name='auth_password_reset_confirm'),
     url(r'^password/reset/complete/$', 'django.contrib.auth.views.password_reset_complete', name='auth_password_reset_complete'),
     
-    url(r'^profile/$', UserProfile.as_view(), name='accounts_user_profile_detail'),
-    
-    
-#    url(
-#        r'^register/$', 
-#        "registration.views.register", 
-#        {'form_class': RegistrationFormUniqueEmail},
-#        name='registration_register',
-#    ),
-#    url(
-#        r'^reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', 
-#        'django.contrib.auth.views.password_reset_confirm',
-#        name='auth_password_reset_confim',
-#    ),
-#    url(
-#        r'^reset/done/$', 
-#        'django.contrib.auth.views.password_reset_complete'
-#    ),
-#    (r'', include('registration.urls')),
+    url(r'^profile/$', SelfUserProfileDetail.as_view(), name='accounts_self_user_profile'),
+    url(r'^profile/(?P<username>\w+)/$', UserProfileDetail.as_view(), name='accounts_user_profile'),
+
 )

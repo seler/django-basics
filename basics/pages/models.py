@@ -34,7 +34,7 @@ class Page(BaseModel):
         verbose_name_plural = _('pages')
 
     def __unicode__(self):
-        return first_of(self.title, self.slug, self.url)
+        return first_of(self.title, self.slug, self.url, u'Page object')
     
     def get_url(self):
         if self.use_url:
