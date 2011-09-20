@@ -1,0 +1,22 @@
+syntax: glob
+*~
+*.pyc
+*.swp
+
+syntax: regexp
+
+# wszystkie foldery svn
+\.svn/
+
+# folder z ustawieniami projektu eclipsa/aptany
+^\.settings/
+# folder z ustawieniami workspace eclipsa/aptany
+^\.metadata/
+
+^\.pydevproject
+^\.project
+
+
+# plik .hgignore
+#^\.hgignore$
+
